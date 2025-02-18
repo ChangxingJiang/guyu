@@ -3,4 +3,9 @@ PROJECT(guyu)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(parser parser/sql_lex.cpp)
+include_directories(
+        ${PROJECT_SOURCE_DIR}
+)
+
+add_executable(parser parser/sql_lex.cpp
+        parser/sql_yacc.tab.h)
