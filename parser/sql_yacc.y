@@ -15,6 +15,7 @@
 /**
 运算符
 */
+%token  OPERATOR_ADD                              /* OPERATOR : + */
 %token  OPERATOR_AND_AND                          /* OPERATOR : && */
 %token  OPERATOR_EQ                               /* OPERATOR : = */
 %token  OPERATOR_EQUAL                            /* OPERATOR : <=> */

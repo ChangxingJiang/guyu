@@ -10,7 +10,7 @@
  */
 struct LEX_STRING {
     char *str{};
-    size_t length{};
+    int length{};
 };
 
 #endif //LEX_STRING_H

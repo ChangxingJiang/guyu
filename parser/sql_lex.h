@@ -16,9 +16,21 @@ public:
     Lex_input_stream(): yylval(nullptr), next_state(LEX_START) {
     }
 
-    bool init(const char *buff, size_t length);
+    bool init(char *buff, int length);
 
-    void reset(const char *buffer, size_t length);
+    void reset(char *buffer, int length);
+
+    [[nodiscard]] char yyPeek() const {
+        return m_ptr[0];
+    }
+
+    char yyGet() {
+        return *m_ptr++;
+    }
+
+    void yySkip() {
+        m_ptr++;
+    }
 
     /* 当前行号 */
     unsigned int yylineno = 1;
@@ -34,7 +46,7 @@ private:
     const char *m_buf = nullptr;
 
     /* 输入流的长度 */
-    size_t m_buf_length = 0;
+    int m_buf_length = 0;
 
     /* 指向输入流中的当前位置的指针 */
     char *m_ptr = nullptr;

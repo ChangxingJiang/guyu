@@ -13,6 +13,8 @@ enum lex_states {
     LEX_START, // 初始状态
     LEX_EOF, // \x00
     LEX_END, // 完成状态
+    LEX_SKIP, // 跳过当前字符：这个状态不会保留到字符处理结束
+    LEX_CHAR, // 未知字符
 
     // 标识符和关键字
     LEX_IDENT, // (标识符)
@@ -43,6 +45,7 @@ enum lex_states {
     LEX_BIN_NUMBER, // [bB]' (二进制字面值)
 
     // 运算符
+    LEX_ADD, // +
     LEX_X21, // !
     LEX_X26, // &
     LEX_X2D, // -
@@ -57,6 +60,7 @@ enum lex_states {
     LEX_LONG_COMMENT, // /*
 
     // 其他元素
+    LEX_STAR, // *
     LEX_DOLLAR, // $
     LEX_SEMICOLON, // ;
     LEX_AT, // @
