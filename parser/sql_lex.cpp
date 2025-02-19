@@ -8,27 +8,14 @@
 
 char *yytext;
 
+void Lex_input_stream::reset(const char *buffer, size_t length) {
+    yylineno = 1;
+    yylval = nullptr;
+
+    m_buf = buffer;
+}
+
+
 int yylex(YYSTYPE *lvalp) {
-    if (yy_cnt == 0) {
-        yy_cnt++;
-        yytext = "3";
-        printf(yytext);
-        return NUM;
-    }
-    if (yy_cnt == 1) {
-        printf("+");
-        yy_cnt++;
-        return ADD;
-    }
-    if (yy_cnt == 2) {
-        yy_cnt++;
-        yytext = "5";
-        printf(yytext);
-        return NUM;
-    }
-    if (yy_cnt == 3) {
-        yy_cnt++;
-        return BR;
-    }
-    return EOF;
+    return SYSTEM_END_OF_INPUT;
 }
