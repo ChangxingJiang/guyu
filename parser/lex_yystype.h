@@ -5,22 +5,39 @@
 #ifndef LEX_YYSTYPE_H
 #define LEX_YYSTYPE_H
 
+#include <string>
+
 #include "include/lex_type/lex_string.h"
 
 /**
  * 词法解析器的类型
  */
 union Lexer_yystype {
-    LEX_STRING lex_str;
+    std::string lex_str;
+
+    Lexer_yystype() {
+    }
+
+    ~Lexer_yystype() {
+    }
+
+    void init_lex_str(const std::string &str) {
+        new(&lex_str) std::string(str);
+    }
 };
 
 /**
  * 语法解析器的类型
  */
 union Parser_yystype {
+    Parser_yystype() {
+    }
+
     Lexer_yystype lexer;
 
     int num{}; // 临时
+
+
 };
 
 typedef Parser_yystype YYSTYPE;

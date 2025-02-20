@@ -26,8 +26,9 @@ void Lex_input_stream::reset(char *buffer, int length) {
 }
 
 
-int yylex(YYSTYPE *yylval, Lex_input_stream *input) {
-    yylval = new YYSTYPE();
+int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input) {
+    auto *yylval = reinterpret_cast<Lexer_yystype *>(yacc_yylval);
+    input->yylval = yylval;
     lex_states state = input->next_state;
     const std::array<lex_states, 256> lex_start_map = init_lex_start_map();
     char ch = '\0';
@@ -40,20 +41,15 @@ int yylex(YYSTYPE *yylval, Lex_input_stream *input) {
                     input->yySkip();
                 }
                 ch = input->yyGet();
-                std::cout << "ch = " << ch << std::endl;
                 state = lex_start_map[ch];
-                std::cout << "next_state = " << state << ", LEX_ADD = " << LEX_ADD << std::endl;
                 break;
-            case LEX_ADD:
-                std::cout << "point1" << std::endl;
-                yylval->lexer.lex_str.str = new char[2];
-                std::cout << "point2" << std::endl;
-                yylval->lexer.lex_str.str[0] = ch;
-                std::cout << "point3" << std::endl;
-                yylval->lexer.lex_str.str[1] = '\0';
-                yylval->lexer.lex_str.length = 1;
-                std::cout << "return = OPERATOR_ADD" << std::endl;
-                return OPERATOR_ADD;
+            case LEX_ADD: // '+'
+                yylval->init_lex_str(std::string(1, ch));
+                // yylval->lex_str.str[0] = ch;
+                // yylval->lex_str.str[1] = '\0';
+                // yylval->lex_str.length = 1;
+                std::cout << "return = LEX_ADD" << yylval->lex_str << std::endl;
+                return ch;
             default:
                 std::cout << "return = SYSTEM_END_OF_INPUT" << std::endl;
                 return SYSTEM_END_OF_INPUT;
@@ -64,8 +60,8 @@ int yylex(YYSTYPE *yylval, Lex_input_stream *input) {
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     input->init("+", 5);
-    YYSTYPE *res1 = nullptr;
+    auto res1 = new Parser_yystype();;
     const int res2 = yylex(res1, input);
-    std::cout << "return = " << res2 << ", token = " << res1 << std::endl;
+    std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
     delete input;
 }

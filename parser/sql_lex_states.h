@@ -46,12 +46,13 @@ enum lex_states {
 
     // 运算符
     LEX_ADD, // +
+    LEX_SUB, // -
+    LEX_STAR, // *
+    LEX_SLASH, // /
     LEX_X21, // !
     LEX_X26, // &
-    LEX_X2D, // -
-    LEX_X2F, // /
-    LEX_X2C, // <
-    LEX_X3E, // >
+    LEX_LT, // <
+    LEX_GT, // >
     LEX_X58, // :
     LEX_X7C, // |
 
@@ -60,7 +61,6 @@ enum lex_states {
     LEX_LONG_COMMENT, // /*
 
     // 其他元素
-    LEX_STAR, // *
     LEX_DOLLAR, // $
     LEX_SEMICOLON, // ;
     LEX_AT, // @
