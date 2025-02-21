@@ -15,7 +15,6 @@
 /**
 运算符
 */
-%token  OPERATOR_ADD                              /* OPERATOR : + */
 %token  OPERATOR_AND_AND                          /* OPERATOR : && */
 %token  OPERATOR_EQ                               /* OPERATOR : = */
 %token  OPERATOR_EQUAL                            /* OPERATOR : <=> */
@@ -30,6 +29,7 @@
 %token  OPERATOR_SHIFT_RIGHT                      /* OPERATOR : >> */
 %token  OPERATOR_JSON_SEPARATOR_SYM               /* OPERATOR: -> */
 %token  OPERATOR_JSON_UNQUOTED_SEPARATOR_SYM      /* OPERATOR: ->> */
+%token  OPERATOR_SET_VAR                          /* OPERATOR: := */
 
 /**
 字面值

@@ -27,18 +27,19 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'%'] = LEX_PERCENT;
     arr[u'-'] = LEX_SUB;
     arr[u'<'] = LEX_LT;
-
-    arr[u'*'] = LEX_STAR;
+    arr[u'>'] = LEX_GT;
+    arr[u'='] = LEX_EQ;
+    arr[u'!'] = LEX_BANG;
     arr[u'/'] = LEX_SLASH;
+    arr[u'*'] = LEX_STAR;
+    arr[u'&'] = LEX_AMP;
+    arr[u'|'] = LEX_BAR;
+    arr[u':'] = LEX_COLON;
+
     arr[u'_'] = LEX_IDENT;
     arr[u'$'] = LEX_IDENT;
     arr[u'\''] = LEX_STRING;
     arr[u'.'] = LEX_POINT;
-    arr[u'!'] = LEX_X21;
-    arr[u'&'] = LEX_X26;
-    arr[u'>'] = LEX_GT;
-    arr[u':'] = LEX_X58;
-    arr[u'|'] = LEX_X7C;
     arr[u'#'] = LEX_COMMENT;
 
     arr[u';'] = LEX_SEMICOLON;

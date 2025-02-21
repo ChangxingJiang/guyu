@@ -51,15 +51,16 @@ enum lex_states {
     LEX_PERCENT, // %
     LEX_SUB, // -
     LEX_LT, // <
+    LEX_GT, // >
+    LEX_EQ, // =
 
     LEX_STAR, // *
     LEX_SLASH, // /
-    LEX_X21, // !
-    LEX_X26, // &
+    LEX_BANG, // !
+    LEX_AMP, // &
 
-    LEX_GT, // >
-    LEX_X58, // :
-    LEX_X7C, // |
+    LEX_COLON, // :
+    LEX_BAR, // |
 
     // 注释
     LEX_COMMENT, // # 或 --
