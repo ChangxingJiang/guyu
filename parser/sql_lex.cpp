@@ -33,7 +33,6 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input) {
     const std::array<lex_states, 256> lex_start_map = init_lex_start_map();
     char ch = '\0';
     while (true) {
-        std::cout << "state = " << state << std::endl;
         switch (state) {
             case LEX_START:
                 while (lex_start_map[ch = input->yyPeek()] == LEX_SKIP) {
@@ -43,15 +42,27 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input) {
                 ch = input->yyGet();
                 state = lex_start_map[ch];
                 break;
-            case LEX_ADD: // '+'
+            case LEX_PLUS: // '+'
+            case LEX_CARET: // '^'
+            case LEX_TILDE: // '~'
+            case LEX_PERCENT: // '%'
                 yylval->init_lex_str(std::string(1, ch));
-                // yylval->lex_str.str[0] = ch;
-                // yylval->lex_str.str[1] = '\0';
-                // yylval->lex_str.length = 1;
-                std::cout << "return = LEX_ADD" << yylval->lex_str << std::endl;
+                return ch;
+            case LEX_SUB: // '-'
+                if (input->yyPeek() == '-') {
+                    state = LEX_COMMENT;
+                    break;
+                }
+                if (input->yyPeek() == '>') {
+                    input->yySkip();
+                    if (input->yyPeek() == '>') {
+                        input->yySkip();
+                        return OPERATOR_JSON_UNQUOTED_SEPARATOR_SYM;
+                    }
+                    return OPERATOR_JSON_SEPARATOR_SYM;
+                }
                 return ch;
             default:
-                std::cout << "return = SYSTEM_END_OF_INPUT" << std::endl;
                 return SYSTEM_END_OF_INPUT;
         }
     }
@@ -59,7 +70,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input) {
 
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
-    input->init("+", 5);
+    input->init("->", 5);
     auto res1 = new Parser_yystype();;
     const int res2 = yylex(res1, input);
     std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;

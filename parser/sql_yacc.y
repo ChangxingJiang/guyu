@@ -28,6 +28,8 @@
 %token  OPERATOR_OR_OR                            /* OPERATOR : || */
 %token  OPERATOR_SHIFT_LEFT                       /* OPERATOR : << */
 %token  OPERATOR_SHIFT_RIGHT                      /* OPERATOR : >> */
+%token  OPERATOR_JSON_SEPARATOR_SYM               /* OPERATOR: -> */
+%token  OPERATOR_JSON_UNQUOTED_SEPARATOR_SYM      /* OPERATOR: ->> */
 
 /**
 字面值

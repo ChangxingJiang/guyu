@@ -45,13 +45,18 @@ enum lex_states {
     LEX_BIN_NUMBER, // [bB]' (二进制字面值)
 
     // 运算符
-    LEX_ADD, // +
+    LEX_PLUS, // +
+    LEX_CARET, // ^
+    LEX_TILDE, // ~
+    LEX_PERCENT, // %
     LEX_SUB, // -
+    LEX_LT, // <
+
     LEX_STAR, // *
     LEX_SLASH, // /
     LEX_X21, // !
     LEX_X26, // &
-    LEX_LT, // <
+
     LEX_GT, // >
     LEX_X58, // :
     LEX_X7C, // |

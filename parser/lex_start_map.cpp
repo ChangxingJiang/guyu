@@ -21,8 +21,13 @@ std::array<lex_states, 256> init_lex_start_map() {
         }
     }
 
-    arr[u'+'] = LEX_ADD;
+    arr[u'+'] = LEX_PLUS;
+    arr[u'^'] = LEX_CARET;
+    arr[u'~'] = LEX_TILDE;
+    arr[u'%'] = LEX_PERCENT;
     arr[u'-'] = LEX_SUB;
+    arr[u'<'] = LEX_LT;
+
     arr[u'*'] = LEX_STAR;
     arr[u'/'] = LEX_SLASH;
     arr[u'_'] = LEX_IDENT;
@@ -31,7 +36,6 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'.'] = LEX_POINT;
     arr[u'!'] = LEX_X21;
     arr[u'&'] = LEX_X26;
-    arr[u'<'] = LEX_LT;
     arr[u'>'] = LEX_GT;
     arr[u':'] = LEX_X58;
     arr[u'|'] = LEX_X7C;
