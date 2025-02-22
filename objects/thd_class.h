@@ -6,6 +6,7 @@
 #define THD_CLASS_H
 
 #include <cstdint>
+#include <parser/lex_start_map.h>
 
 class THD {
 public:

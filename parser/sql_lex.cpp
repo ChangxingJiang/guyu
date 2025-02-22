@@ -5,12 +5,13 @@
 #include "lex_yystype.h"
 #include "sql_lex.h"
 #include "sql_lex_states.h"
-#include "lex_start_map.cpp"
+#include "lex_start_map.h"
 
 #include <iostream>
 
 #include "sql_yacc.tab.h"
 #include "objects/thd_class.h"
+#include "include/string_utils.h"
 
 char *yytext;
 
@@ -23,6 +24,8 @@ void Lex_input_stream::reset(char *buffer, int length) {
     yylineno = 1;
     yylval = nullptr;
     m_buf = buffer;
+    m_end_of_buf = buffer + length;
+    m_buf_length = length;
     m_ptr = buffer;
 }
 
@@ -37,7 +40,7 @@ static auto LONGLONG_STR = "9223372036854775807";
 static auto SIGNED_LONGLONG_STR = "-9223372036854775808";
 static auto UNSIGNED_LONGLONG_STR = "18446744073709551615";
 
-static inline int int_token(const char *str, uint length) {
+static int int_token(const char *str, uint length) {
     // 【启发式】快速处理常见场景
     if (length < LONG_LEN) return LITERAL_NUM;
 
@@ -98,6 +101,57 @@ static inline int int_token(const char *str, uint length) {
     while (*cmp && *cmp++ == *str++) {
     }
     return static_cast<uchar>(str[-1]) <= static_cast<uchar>(cmp[-1]) ? smaller : bigger;
+}
+
+
+static std::string find_mark(Lex_input_stream *input, const char mark) {
+    std::string result{};
+    char ch = input->yy_peek();
+    while (ch != '\0') {
+        if (ch == '\\') {
+            if (input->eof()) return result;
+            input->yy_skip();
+            ch = input->yy_get();
+            switch (ch) {
+                case 'n':
+                    result.push_back('\n');
+                    break;
+                case 't':
+                    result.push_back('\t');
+                    break;
+                case 'r':
+                    result.push_back('\r');
+                    break;
+                case 'b':
+                    result.push_back('\b');
+                    break;
+                case '0':
+                    result.push_back(0); // ASCII null
+                    break;
+                case '_':
+                case '%':
+                    result.push_back('\\'); // 保留通配符之前的下划线
+                    [[fallthrough]];
+                default:
+                    result.push_back(ch);
+                    break;
+            }
+        } else if (ch == mark) {
+            input->yy_skip();
+            if (input->yy_peek() == mark) {
+                result.push_back(mark);
+                input->yy_skip();
+            } else {
+                return result;
+            }
+        } else {
+            const uint8_t char_length = get_utf8_char_length(ch);
+            result.append(input->get_ptr(), char_length);
+            input->yy_skip(char_length);
+        }
+        ch = input->yy_peek();
+    }
+    return result; // unexpected end of query
 }
 
 
@@ -318,6 +372,17 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     input->yy_unget();
                 }
                 break;
+            case LEX_STRING:
+                yylval->init_lex_str(find_mark(input, ch));
+                return LITERAL_TEXT_STRING;
+            case LEX_IDENT_OR_NCHAR:
+                if (input->yy_peek() != '\'') {
+                    state = LEX_IDENT;
+                    break;
+                }
+                input->yy_skip();
+                yylval->init_lex_str(find_mark(input, ch));
+                return LITERAL_NCHAR_STRING;
             default:
                 return SYSTEM_END_OF_INPUT;
         }
@@ -328,7 +393,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     auto thd = new THD();
-    input->init(".56e5", 5);
+    input->init("n'ab\\c'", 8);
     auto res1 = new Parser_yystype();;
     const int res2 = yylex(res1, input, thd);
     std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;

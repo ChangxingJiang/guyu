@@ -43,6 +43,16 @@ public:
         return static_cast<uint>(m_ptr - m_tok_start - 1);
     }
 
+    /** 如果当前输入流已经结束则返回 true */
+    [[nodiscard]] bool eof() const {
+        return m_ptr >= m_end_of_buf;
+    }
+
+    /** 返回指向输入流中当前 Token 开始位置的指针 */
+    [[nodiscard]] const char *get_tok_start() const {
+        return m_tok_start;
+    }
+
     /** 获取当前字符，但不移动指针 */
     [[nodiscard]] char yy_peek() const {
         return m_ptr[0];
@@ -63,14 +73,22 @@ public:
         m_ptr++;
     }
 
-    /** 返回指向输入流中当前 Token 开始位置的指针 */
-    [[nodiscard]] const char *get_tok_start() const {
-        return m_tok_start;
+    /** 将指针向后移动 n 个字符 */
+    void yy_skip(const int n) {
+        m_ptr += n;
+    }
+
+    /** 获取当前指针位置 */
+    [[nodiscard]] const char *get_ptr() const {
+        return m_ptr;
     }
 
 private:
     /* 指向输入流开始位置的指针 */
     const char *m_buf = nullptr;
+
+    /* 指向输入流结束位置的指针 */
+    const char *m_end_of_buf = nullptr;
 
     /* 输入流的长度 */
     int m_buf_length = 0;

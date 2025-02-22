@@ -8,4 +8,6 @@ include_directories(
 )
 
 add_executable(parser parser/sql_lex.cpp
-        parser/sql_yacc.tab.h)
+        parser/sql_yacc.tab.h
+        parser/lex_start_map.cpp
+        include/string_utils.cpp)

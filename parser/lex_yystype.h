@@ -7,8 +7,6 @@
 
 #include <string>
 
-#include "include/lex_type/lex_string.h"
-
 /**
  * 词法解析器的类型
  */
@@ -36,8 +34,6 @@ union Parser_yystype {
     Lexer_yystype lexer;
 
     int num{}; // 临时
-
-
 };
 
 typedef Parser_yystype YYSTYPE;

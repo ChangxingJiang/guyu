@@ -1,6 +1,5 @@
 #include "lex_start_map.h"
 
-#include <cstdint>
 #include <locale>
 
 std::array<lex_states, 256> init_lex_start_map() {
@@ -41,10 +40,11 @@ std::array<lex_states, 256> init_lex_start_map() {
     // 字面值
     arr[u'b'] = arr[u'B'] = LEX_IDENT_OR_BIN;
     arr[u'x'] = arr[u'X'] = LEX_IDENT_OR_HEX;
+    arr[u'n'] = arr[u'N'] = LEX_IDENT_OR_NCHAR;
     arr[u'.'] = LEX_DOT;
+    arr[u'\''] = LEX_STRING;
 
     arr[u'_'] = LEX_IDENT;
-    arr[u'\''] = LEX_STRING;
     arr[u'#'] = LEX_COMMENT;
 
     arr[u';'] = LEX_SEMICOLON;
@@ -53,7 +53,6 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'`'] = LEX_DELIMITER;
     arr[u'"'] = LEX_STRING_OR_DELIMITER;
 
-    arr[u'n'] = arr[u'N'] = LEX_IDENT_OR_NCHAR;
 
     /* Special handling of '$' for dollar quoted strings */
     arr[u'$'] = LEX_DOLLAR;
