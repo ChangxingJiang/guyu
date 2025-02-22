@@ -21,6 +21,7 @@ std::array<lex_states, 256> init_lex_start_map() {
         }
     }
 
+    // 运算符
     arr[u'+'] = LEX_PLUS;
     arr[u'^'] = LEX_CARET;
     arr[u'~'] = LEX_TILDE;
@@ -36,8 +37,11 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'|'] = LEX_BAR;
     arr[u':'] = LEX_COLON;
 
+    // 字面值
+    arr[u'b'] = arr[u'B'] = LEX_IDENT_OR_BIN;
+    arr[u'x'] = arr[u'X'] = LEX_IDENT_OR_HEX;
+
     arr[u'_'] = LEX_IDENT;
-    arr[u'$'] = LEX_IDENT;
     arr[u'\''] = LEX_STRING;
     arr[u'.'] = LEX_POINT;
     arr[u'#'] = LEX_COMMENT;
@@ -48,9 +52,6 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'`'] = LEX_DELIMITER;
     arr[u'"'] = LEX_STRING_OR_DELIMITER;
 
-    /* Special handling of hex and binary strings */
-    arr[u'x'] = arr[u'X'] = LEX_IDENT_OR_HEX;
-    arr[u'b'] = arr[u'B'] = LEX_IDENT_OR_BIN;
     arr[u'n'] = arr[u'N'] = LEX_IDENT_OR_NCHAR;
 
     /* Special handling of '$' for dollar quoted strings */

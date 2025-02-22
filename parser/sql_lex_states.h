@@ -16,6 +16,30 @@ enum lex_states {
     LEX_SKIP, // 跳过当前字符：这个状态不会保留到字符处理结束
     LEX_CHAR, // 未知字符
 
+    // 运算符
+    LEX_PLUS, // +
+    LEX_CARET, // ^
+    LEX_TILDE, // ~
+    LEX_PERCENT, // %
+    LEX_SUB, // -
+    LEX_LT, // <
+    LEX_GT, // >
+    LEX_EQ, // =
+    LEX_STAR, // *
+    LEX_SLASH, // /
+    LEX_BANG, // !
+    LEX_AMP, // &
+    LEX_BAR, // |
+    LEX_COLON, // :
+
+    // 十六进制字面值
+    LEX_IDENT_OR_HEX, // [xX] (标识符 or 十六进制字面值)
+    LEX_HEX_NUMBER, // [xX]' (十六进制字面值)
+
+    // 二进制字面值
+    LEX_IDENT_OR_BIN, // [bB] (标识符 or 二进制字面值)
+    LEX_BIN_NUMBER, // [bB]' (二进制字面值)
+
     // 标识符和关键字
     LEX_IDENT, // (标识符)
     LEX_DELIMITER, // ` (定界标识符)
@@ -36,31 +60,6 @@ enum lex_states {
     LEX_NUMBER_POINT, // [0-9]+\.
     LEX_POINT, // \.
 
-    // 十六进制字面值
-    LEX_IDENT_OR_HEX, // [xX] (标识符 or 十六进制字面值)
-    LEX_HEX_NUMBER, // [xX]' (十六进制字面值)
-
-    // 二进制字面值
-    LEX_IDENT_OR_BIN, // [bB] (标识符 or 二进制字面值)
-    LEX_BIN_NUMBER, // [bB]' (二进制字面值)
-
-    // 运算符
-    LEX_PLUS, // +
-    LEX_CARET, // ^
-    LEX_TILDE, // ~
-    LEX_PERCENT, // %
-    LEX_SUB, // -
-    LEX_LT, // <
-    LEX_GT, // >
-    LEX_EQ, // =
-
-    LEX_STAR, // *
-    LEX_SLASH, // /
-    LEX_BANG, // !
-    LEX_AMP, // &
-
-    LEX_COLON, // :
-    LEX_BAR, // |
 
     // 注释
     LEX_COMMENT, // # 或 --

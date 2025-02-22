@@ -27,17 +27,17 @@
 %token  OPERATOR_OR_OR                            /* OPERATOR : || */
 %token  OPERATOR_SHIFT_LEFT                       /* OPERATOR : << */
 %token  OPERATOR_SHIFT_RIGHT                      /* OPERATOR : >> */
-%token  OPERATOR_JSON_SEPARATOR_SYM               /* OPERATOR: -> */
-%token  OPERATOR_JSON_UNQUOTED_SEPARATOR_SYM      /* OPERATOR: ->> */
+%token  OPERATOR_JSON_SEPARATOR                   /* OPERATOR: -> */
+%token  OPERATOR_JSON_UNQUOTED_SEPARATOR          /* OPERATOR: ->> */
 %token  OPERATOR_SET_VAR                          /* OPERATOR: := */
 
 /**
 字面值
 */
-%token  LITERAL_BIN_NUM                     /* 二进制字面值 */
-%token  LITERAL_DECIMAL_NUM                 /* 小数字面值 */
-%token  LITERAL_FLOAT_NUM                   /* 浮点数字面值 */
-%token  LITERAL_HEX_NUM                     /* 十六进制字面值 */
+%token  LITERAL_BIN_NUM                     /* 二进制字面值（仅包含二进制数部分） */
+%token  LITERAL_HEX_NUM                     /* 十六进制字面值（仅包含十六进制数部分） */
+%token  LITERAL_DECIMAL_NUM                 /* 不包含 e 或 E 的小数字面值 */
+%token  LITERAL_FLOAT_NUM                   /* 包含 e 或 E 的浮点数字面值 */
 %token  LITERAL_LONG_NUM                    /* 长整数字面值 */
 %token  LITERAL_NCHAR_STRING                /* unicode 字符串字面值 */
 %token  LITERAL_NUM                         /* 整数字面值 */
