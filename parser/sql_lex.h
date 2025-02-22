@@ -53,6 +53,11 @@ public:
         return *m_ptr++;
     }
 
+    /** 将指针移动到上一个字符 */
+    void yy_unget() {
+        m_ptr--;
+    }
+
     /** 将指针移动到下一个字符 */
     void yy_skip() {
         m_ptr++;

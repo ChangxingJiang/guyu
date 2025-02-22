@@ -38,11 +38,11 @@
 %token  LITERAL_HEX_NUM                     /* 十六进制字面值（仅包含十六进制数部分） */
 %token  LITERAL_DECIMAL_NUM                 /* 不包含 e 或 E 的小数字面值 */
 %token  LITERAL_FLOAT_NUM                   /* 包含 e 或 E 的浮点数字面值 */
-%token  LITERAL_LONG_NUM                    /* 长整数字面值 */
-%token  LITERAL_NCHAR_STRING                /* unicode 字符串字面值 */
 %token  LITERAL_NUM                         /* 整数字面值 */
-%token  LITERAL_TEXT_STRING                 /* 字符串字面值 */
+%token  LITERAL_LONG_NUM                    /* 长整数字面值 */
 %token  LITERAL_ULONGLONG_NUM               /* 无符号长整数字面值 */
+%token  LITERAL_NCHAR_STRING                /* unicode 字符串字面值 */
+%token  LITERAL_TEXT_STRING                 /* 字符串字面值 */
 %token  LITERAL_UNDERSCORE_CHARSET          /* 下划线开头的字符集名称 */
 
 /**

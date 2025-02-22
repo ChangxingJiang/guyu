@@ -53,12 +53,10 @@ enum lex_states {
 
     // 数值字面值
     LEX_ZERO, // 0
-    LEX_ZERO_B, // 0[bB] (二进制字面值)
-    LEX_ZERO_X, // 0[xX] (十六进制字面值)
     LEX_NUMBER, // [0-9]+
-    LEX_NUMBER_END, // [0-9]+(?!=[0-9])
-    LEX_NUMBER_POINT, // [0-9]+\.
-    LEX_POINT, // \.
+    LEX_NUMBER_DOT, // [0-9]+.
+    LEX_NUMBER_E, // [0-9]+(\.[0-9]+)?[eE]
+    LEX_DOT, // \.
 
 
     // 注释

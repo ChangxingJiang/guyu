@@ -1,5 +1,6 @@
 #include "lex_start_map.h"
 
+#include <cstdint>
 #include <locale>
 
 std::array<lex_states, 256> init_lex_start_map() {
@@ -40,10 +41,10 @@ std::array<lex_states, 256> init_lex_start_map() {
     // 字面值
     arr[u'b'] = arr[u'B'] = LEX_IDENT_OR_BIN;
     arr[u'x'] = arr[u'X'] = LEX_IDENT_OR_HEX;
+    arr[u'.'] = LEX_DOT;
 
     arr[u'_'] = LEX_IDENT;
     arr[u'\''] = LEX_STRING;
-    arr[u'.'] = LEX_POINT;
     arr[u'#'] = LEX_COMMENT;
 
     arr[u';'] = LEX_SEMICOLON;
@@ -58,4 +59,15 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[u'$'] = LEX_DOLLAR;
 
     return arr;
+}
+
+std::array<uint8_t, 256> init_lex_ident_map(const std::array<lex_states, 256> &lex_start_map) {
+    std::array<uint8_t, 256> ident_map{0};
+
+    for (unsigned i = 0; i < 256; i++) {
+        ident_map[i] = static_cast<uint8_t>(lex_start_map[i] == LEX_IDENT ||
+                                            lex_start_map[i] == LEX_NUMBER);
+    }
+
+    return ident_map;
 }
