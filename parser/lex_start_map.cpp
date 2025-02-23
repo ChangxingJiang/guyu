@@ -2,6 +2,11 @@
 
 #include <locale>
 
+/**
+ * 初始化词法解析自动机初始状态转移规则的哈希表，即在初始状态下，遇到每个字符后要转移到什么状态
+ *
+ * @return 初始状态转移规则的哈希表
+ */
 std::array<lex_states, 256> init_lex_start_map() {
     std::array<lex_states, 256> arr{LEX_IDENT};
 

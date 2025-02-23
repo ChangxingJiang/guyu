@@ -13,8 +13,9 @@ enum lex_states {
     LEX_START, // 初始状态
     LEX_EOF, // \x00
     LEX_END, // 完成状态
+    LEX_CHAR, // 其他字符
     LEX_SKIP, // 跳过当前字符：这个状态不会保留到字符处理结束
-    LEX_CHAR, // 未知字符
+    LEX_ERROR, // 异常字符：这个状态仅出现在初始状态转移规则的哈希表中，表示异常
 
     // 运算符
     LEX_PLUS, // +
