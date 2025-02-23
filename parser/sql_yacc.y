@@ -825,38 +825,38 @@
 /**
 非关键字函数
 */
-%token  ADDDATE_SYM                               /* MYSQL-FUNC */
-%token  CURDATE                                   /* MYSQL-FUNC */
-%token  CURTIME                                   /* MYSQL-FUNC */
-%token  DATE_ADD_INTERVAL                         /* MYSQL-FUNC */
-%token  DATE_SUB_INTERVAL                         /* MYSQL-FUNC */
-%token  EXTRACT_SYM                               /* SQL-2003-N */
-%token  NOW_SYM
-%token  SUBDATE_SYM
-%token  SYSDATE
-%token  BIT_AND_SYM                               /* MYSQL-FUNC */
-%token  BIT_OR_SYM                                /* MYSQL-FUNC */
-%token  BIT_XOR_SYM                               /* MYSQL-FUNC */
-%token  COUNT_SYM                                 /* SQL-2003-N */
-%token  GROUP_CONCAT_SYM
-%token  JSON_ARRAYAGG                             /* SQL-2015-R (MySQL 8.0) */
-%token  JSON_OBJECTAGG                            /* SQL-2015-R (MySQL 8.0) */
-%token  MAX_SYM                                   /* SQL-2003-N */
-%token  MIN_SYM                                   /* SQL-2003-N */
-%token  STD_SYM
-%token  STDDEV_SAMP_SYM                           /* SQL-2003-N */
-%token  SUM_SYM                                   /* SQL-2003-N */
-%token  VAR_SAMP_SYM
-%token  VARIANCE_SYM
-%token  SUBSTRING                                 /* SQL-2003-N */
-%token  TRIM                                      /* SQL-2003-N */
-%token  CAST_SYM                                  /* SQL-2003-R */
-%token  ST_COLLECT_SYM                            /* (MySQL 8.0) */
+%token  WORD_ADDDATE                              /* MYSQL-FUNC */
+%token  WORD_CURDATE                              /* MYSQL-FUNC */
+%token  WORD_CURTIME                              /* MYSQL-FUNC */
+%token  WORD_DATE_ADD_INTERVAL                    /* MYSQL-FUNC */
+%token  WORD_DATE_SUB_INTERVAL                    /* MYSQL-FUNC */
+%token  WORD_EXTRACT                              /* SQL-2003-N */
+%token  WORD_NOW
+%token  WORD_SUBDATE
+%token  WORD_SYSDATE
+%token  WORD_BIT_AND                              /* MYSQL-FUNC */
+%token  WORD_BIT_OR                               /* MYSQL-FUNC */
+%token  WORD_BIT_XOR                              /* MYSQL-FUNC */
+%token  WORD_COUNT                                /* SQL-2003-N */
+%token  WORD_GROUP_CONCAT
+%token  WORD_JSON_ARRAYAGG                        /* SQL-2015-R (MySQL 8.0) */
+%token  WORD_JSON_OBJECTAGG                       /* SQL-2015-R (MySQL 8.0) */
+%token  WORD_MAX                                  /* SQL-2003-N */
+%token  WORD_MIN                                  /* SQL-2003-N */
+%token  WORD_STD
+%token  WORD_STDDEV_SAMP                          /* SQL-2003-N */
+%token  WORD_SUM                                  /* SQL-2003-N */
+%token  WORD_VAR_SAMP
+%token  WORD_VARIANCE
+%token  WORD_SUBSTRING                            /* SQL-2003-N */
+%token  WORD_TRIM                                 /* SQL-2003-N */
+%token  WORD_CAST                                 /* SQL-2003-R */
+%token  WORD_ST_COLLECT                           /* (MySQL 8.0) */
 
 %type <num> res
 
 %%
-res : TRIM;
+res : WORD_NOW;
 %%
 
 int main(){
