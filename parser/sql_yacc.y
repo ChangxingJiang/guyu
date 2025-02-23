@@ -252,7 +252,7 @@
 %token  KEYWORD_FETCH                             /* reserved keyword : SQL-2003-R */
 %token  KEYWORD_FIELDS                            /* keyword */
 %token  KEYWORD_FILE                              /* keyword */
-%token  KEYWORD_FILE_BLOCKEYWORD_SIZE                   /* keyword */
+%token  KEYWORD_FILE_BLOCK_SIZE                   /* keyword */
 %token  KEYWORD_FILTER                            /* keyword */
 %token  KEYWORD_FINISH                            /* keyword : SQL-2016-N (MySQL 8.0) */
 %token  KEYWORD_FIRST                             /* keyword : SQL-2003-N */
@@ -353,7 +353,7 @@
 %token  KEYWORD_KEY                               /* reserved keyword : SQL-2003-N */
 %token  KEYWORD_KEYRING                           /* keyword (MySQL 8.0) */
 %token  KEYWORD_KEYS                              /* reserved keyword */
-%token  KEYWORD_KEY_BLOCKEYWORD_SIZE                    /* keyword */
+%token  KEYWORD_KEY_BLOCK_SIZE                    /* keyword */
 %token  KEYWORD_KILL                              /* reserved keyword */
 %token  KEYWORD_LAG                               /* reserved keyword : SQL-2011-R (MySQL 8.0) */
 %token  KEYWORD_LANGUAGE                          /* keyword : SQL-2003-R */
@@ -457,7 +457,7 @@
 %token  KEYWORD_NDB                               /* reserved keyword */
 %token  KEYWORD_NDBCLUSTER                        /* keyword */
 %token  KEYWORD_NESTED                            /* keyword : SQL-2016-N (MySQL 8.0) */
-%token  KEYWORD_NETWORKEYWORD_NAMESPACE                 /* keyword : MYSQL (MySQL 8.0) */
+%token  KEYWORD_NETWORK_NAMESPACE                 /* keyword : MYSQL (MySQL 8.0) */
 %token  KEYWORD_NEVER                             /* keyword */
 %token  KEYWORD_NEW                               /* keyword : SQL-2003-R */
 %token  KEYWORD_NEXT                              /* keyword : SQL-2003-N */
@@ -502,7 +502,7 @@
 %token  KEYWORD_OUTFILE                           /* reserved keyowrd */
 %token  KEYWORD_OVER                              /* reserved keyword : SQL-2003-R (MySQL 8.0) */
 %token  KEYWORD_OWNER                             /* keyword */
-%token  KEYWORD_PACKEYWORD_KEYS                         /* keyword */
+%token  KEYWORD_PACK_KEYS                         /* keyword */
 %token  KEYWORD_PAGE                              /* keyword */
 %token  KEYWORD_PARALLEL                          /* reserved keyword (MySQL 8.0) */
 %token  KEYWORD_PARSER                            /* keyword */
@@ -512,7 +512,7 @@
 %token  KEYWORD_PARTITIONING                      /* keyword */
 %token  KEYWORD_PARTITIONS                        /* keyword */
 %token  KEYWORD_PASSWORD                          /* keyword */
-%token  KEYWORD_PASSWORD_LOCKEYWORD_TIME                /* keyword : MYSQL (MySQL 8.0) */
+%token  KEYWORD_PASSWORD_LOCK_TIME                /* keyword : MYSQL (MySQL 8.0) */
 %token  KEYWORD_PATH                              /* keyword : SQL-2003-N (MySQL 8.0) */
 %token  KEYWORD_PERCENT_RANK                      /* reserved keyword : SQL-2003-R (MySQL 8.0) */
 %token  KEYWORD_PERSIST                           /* keyword : MYSQL (MySQL 8.0) */
