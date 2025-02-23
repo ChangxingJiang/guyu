@@ -54,12 +54,17 @@ public:
     }
 
     /** 获取当前字符，但不移动指针 */
-    [[nodiscard]] char yy_peek() const {
+    [[nodiscard]] uchar yy_peek() const {
         return m_ptr[0];
     }
 
+    /** 获取当前指针之后的第 n 个字符，但不移动指针 */
+    [[nodiscard]] uchar yy_peek(const int n) const {
+        return m_ptr[n];
+    }
+
     /** 获取当前字符，并将指针移动到下一个字符 */
-    char yy_get() {
+    uchar yy_get() {
         return *m_ptr++;
     }
 

@@ -11,7 +11,7 @@
  * 4. 如果首字节以11110开头，则它是一个四字节字符的开始（长度为4）。
  * 5. 如果首字节以10开头，则它是多字节字符的后续部分，不属于一个新的字符的开始。
  */
-uint8_t get_utf8_char_length(const char byte) {
+uint8_t get_utf8_char_length(const uchar byte) {
     if ((byte & 0x80) == 0) return 1; // ASCII
     if ((byte & 0xE0) == 0xC0) return 2; // 2-byte sequence
     if ((byte & 0xF0) == 0xE0) return 3; // 3-byte sequence
@@ -22,7 +22,7 @@ uint8_t get_utf8_char_length(const char byte) {
 /**
  * 判断当前字节是否是一个多字节字符的一部分（即不是字符的起始字节）
  */
-bool is_part_of_multi_byte_char(const unsigned char byte) {
+bool is_part_of_multi_byte_char(const uchar byte) {
     // Check if it's not a start of a new character
     return (byte & 0xC0) == 0x80;
 }

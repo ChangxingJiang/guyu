@@ -104,9 +104,9 @@ static int int_token(const char *str, uint length) {
 }
 
 
-static std::string find_mark(Lex_input_stream *input, const char mark) {
+static std::string find_mark(Lex_input_stream *input, const uchar mark) {
     std::string result{};
-    char ch = input->yy_peek();
+    uchar ch = input->yy_peek();
     while (ch != '\0') {
         if (ch == '\\') {
             if (input->eof()) return result;
@@ -133,13 +133,13 @@ static std::string find_mark(Lex_input_stream *input, const char mark) {
                     result.push_back('\\'); // 保留通配符之前的下划线
                     [[fallthrough]];
                 default:
-                    result.push_back(ch);
+                    result.push_back(static_cast<char>(ch));
                     break;
             }
         } else if (ch == mark) {
             input->yy_skip();
             if (input->yy_peek() == mark) {
-                result.push_back(mark);
+                result.push_back(static_cast<char>(mark));
                 input->yy_skip();
             } else {
                 return result;
@@ -147,6 +147,8 @@ static std::string find_mark(Lex_input_stream *input, const char mark) {
         } else {
             const uint8_t char_length = get_utf8_char_length(ch);
             result.append(input->get_ptr(), char_length);
+            std::cout << "char_length=" << int(char_length) << ", char_value=" << std::string(
+                input->get_ptr(), char_length) << std::endl;
             input->yy_skip(char_length);
         }
         ch = input->yy_peek();
@@ -154,16 +156,36 @@ static std::string find_mark(Lex_input_stream *input, const char mark) {
     return result; // unexpected end of query
 }
 
+/**
+ * 跳过标识符中的字符
+ *
+ * @param input 词法解析器输入流管理器
+ * @param lex_ident_map 标识符状态映射器 TODO 待优化注释名称
+ */
+static void skip_ident(Lex_input_stream *input, const std::array<uint8_t, 256> &lex_ident_map) {
+    uchar ch = input->yy_peek();
+    // std::cout << "skip_ident: ch = " << int(ch) << std::endl;
+    while (lex_ident_map[ch]) {
+        const uint8_t char_length = get_utf8_char_length(ch);
+        input->yy_skip(char_length);
+        ch = input->yy_peek();
+        // std::cout << "skip_ident: ch = " << int(ch) << std::endl;
+    }
+}
+
 
 int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
     auto *yylval = reinterpret_cast<Lexer_yystype *>(yacc_yylval);
     input->yylval = yylval;
     lex_states state = input->next_state;
+    input->next_state = LEX_START;
 
     input->start_token();
     const std::array<lex_states, 256> lex_start_map = thd->get_lex_start_map();
-    const std::array<uint8_t, 256> lex_ident_map = thd->get_lex_ident_map();
-    char ch = '\0';
+    const std::array<uint8_t, 256> lex_ident_map = thd->get_lex_ident_map(); // TODO 待考虑是否需要优化类型
+    const std::unordered_map<std::string, int> &lex_keyword_map = thd->get_lex_keyword_map();
+    uchar ch = '\0';
+    std::string ident_or_keyword{};
     while (true) {
         switch (state) {
             case LEX_START:
@@ -173,6 +195,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 }
                 ch = input->yy_get();
                 state = lex_start_map[ch];
+                std::cout << "LEX_START 变更状态: ch = " << int(ch) << ", state = " << state << std::endl;
                 break;
 
             /* 运算符解析逻辑 */
@@ -182,7 +205,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
             case LEX_PERCENT: // "%"
             case LEX_EQ: // "="
             case LEX_STAR: // "*"
-                yylval->init_lex_str(std::string(1, ch));
+                yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
                 return ch;
             case LEX_SUB: // "-"
                 if (input->yy_peek() == '-') {
@@ -373,7 +396,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 }
                 break;
             case LEX_STRING:
-                yylval->init_lex_str(find_mark(input, ch));
+                yylval->init_lex_str(find_mark(input, static_cast<char>(ch)));
                 return LITERAL_TEXT_STRING;
             case LEX_IDENT_OR_NCHAR:
                 if (input->yy_peek() != '\'') {
@@ -381,8 +404,70 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     break;
                 }
                 input->yy_skip();
-                yylval->init_lex_str(find_mark(input, ch));
+                yylval->init_lex_str(find_mark(input, static_cast<char>(ch)));
                 return LITERAL_NCHAR_STRING;
+
+            /* 标识符 + 关键字 */
+            case LEX_IDENT:
+                input->yy_unget();
+                skip_ident(input, lex_ident_map); // 不断匹配数字、字母和多字节字符直至遇到其他字符
+
+                ident_or_keyword = std::string(input->get_tok_start(), input->yy_length() + 1); // 获取当前标识符 or 关键字
+                yylval->init_lex_str(ident_or_keyword);
+
+                ch = input->yy_peek();
+                while (lex_start_map[ch] == LEX_SKIP) {
+                    ch = input->yy_get(); // 跳过后续空格
+                    if (ch == '\n') input->yylineno++;
+                }
+
+                std::cout << "[LEX_IDENT - 1] ch = " << int(ch)
+                        << ", input->yy_peek(1) = " << int(input->yy_peek(1))
+                        << ", lex_ident_map[input->yy_peek(1)] = " << bool(lex_ident_map[input->yy_peek(1)]) << std::endl;
+
+                if (ch == '.' && lex_ident_map[input->yy_peek(1)]) {
+                    // 判断下一个字符是否为 . 且之后也是标识符 TODO 这里需要考虑如何优化
+                    input->next_state = LEX_IDENT_SEP_START;
+                    return IDENT; // TODO 需考虑是否包含多字节字符的问题
+                }
+
+                if (lex_keyword_map.count(ident_or_keyword) > 0) {
+                    // 判断当前语法元素是否为关键字
+                    return lex_keyword_map.at(ident_or_keyword);
+                }
+
+                return IDENT; // TODO 待未支持 charset 名称解析 + 需考虑是否包含多字节字符的问题
+
+            case LEX_IDENT_SEP_START:
+                ch = input->yy_get(); // should be '.'
+                yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
+                if (lex_ident_map[input->yy_peek()]) {
+                    input->next_state = LEX_IDENT_START;
+                } else {
+                    input->next_state = LEX_START;
+                }
+                return ch;
+
+            case LEX_IDENT_START:
+                skip_ident(input, lex_ident_map); // 不断匹配数字、字母和多字节字符直至遇到其他字符
+
+                // std::cout << "构造时的状态: yy_length = " << input->yy_length() << std::endl;
+
+                yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length() + 1));
+
+                ch = input->yy_peek();
+                while (lex_start_map[ch] == LEX_SKIP) {
+                    ch = input->yy_get(); // 跳过后续空格
+                    if (ch == '\n') input->yylineno++;
+                }
+
+                if (ch == '.' && lex_ident_map[input->yy_peek()]) {
+                    // 判断下一个字符是否为 . 且之后也是标识符 TODO 这里需要考虑如何优化
+                    input->next_state = LEX_IDENT_SEP_START;
+                }
+
+                return IDENT;
+
             default:
                 return SYSTEM_END_OF_INPUT;
         }
@@ -393,9 +478,13 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     auto thd = new THD();
-    input->init("n'ab\\c'", 8);
+    input->init("a.b", 3);
     auto res1 = new Parser_yystype();;
-    const int res2 = yylex(res1, input, thd);
+    int res2 = yylex(res1, input, thd);
+    std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
+    res2 = yylex(res1, input, thd);
+    std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
+    res2 = yylex(res1, input, thd);
     std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
     delete input;
 }
