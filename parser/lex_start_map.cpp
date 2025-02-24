@@ -47,7 +47,7 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[0x21] = LEX_BANG; // '!' 叹号
     arr[0x22] = LEX_STRING_OR_DELIMITER; // '"' 双引号
     arr[0x23] = LEX_COMMENT; // '#' 井号
-
+    arr[0x24] = LEX_IDENT; // '$' 美元符号
     arr[0x25] = LEX_PERCENT; // '%' 百分号
     arr[0x26] = LEX_AMP; // '&' 和号
     arr[0x27] = LEX_STRING; // '\'' 单引号
@@ -74,7 +74,8 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[0x3C] = LEX_LT; // '<' 小于
     arr[0x3D] = LEX_EQ; // '=' 等号
     arr[0x3E] = LEX_GT; // '>' 大于
-
+    arr[0x3F] = LEX_QUES; // '?' 问号
+    arr[0x40] = LEX_AT; // '@' 电子邮件符号
     arr[0x41] = LEX_IDENT; // 'A'
     arr[0x42] = LEX_IDENT_OR_BIN; // 'B'
     arr[0x43] = LEX_IDENT; // 'C'
@@ -101,12 +102,12 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[0x58] = LEX_IDENT_OR_HEX; // 'X'
     arr[0x59] = LEX_IDENT; // 'Y'
     arr[0x5A] = LEX_IDENT; // 'Z'
-    arr[0x5B] = LEX_ERROR;  // '[' 左中括号
+    arr[0x5B] = LEX_ERROR; // '[' 左中括号
     arr[0x5C] = LEX_ERROR; // '\' 反斜杠
     arr[0x5D] = LEX_ERROR; // ']' 右中括号
     arr[0x5E] = LEX_CARET; // '^' 脱字符
     arr[0x5F] = LEX_IDENT; // '_' 下划线
-
+    arr[0x60] = LEX_DELIMITER; // '`' 反引号
     arr[0x61] = LEX_IDENT; // 'a'
     arr[0x62] = LEX_IDENT_OR_BIN; // 'b'
     arr[0x63] = LEX_IDENT; // 'c'
@@ -258,13 +259,6 @@ std::array<lex_states, 256> init_lex_start_map() {
     arr[0xF5] = LEX_IDENT; // 11110 开头，四字节字符的开始位置
     arr[0xF6] = LEX_IDENT; // 11110 开头，四字节字符的开始位置
     arr[0xF7] = LEX_IDENT; // 11110 开头，四字节字符的开始位置
-
-    // 字面值
-    arr[u'@'] = LEX_AT;
-    arr[u'`'] = LEX_DELIMITER;
-
-    /* Special handling of '$' for dollar quoted strings */
-    arr[u'$'] = LEX_DOLLAR;
 
     return arr;
 }

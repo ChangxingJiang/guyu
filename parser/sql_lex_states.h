@@ -25,6 +25,7 @@ enum lex_states {
     LEX_SUB, // -
     LEX_LT, // <
     LEX_GT, // >
+    LEX_QUES, // ?
     LEX_EQ, // =
     LEX_STAR, // *
     LEX_SLASH, // /
@@ -73,6 +74,9 @@ enum lex_states {
     LEX_DOLLAR, // $
     LEX_SEMICOLON, // ;
     LEX_AT, // @
+    LEX_AT_AT, // @@
+    LEX_AT_AT_END, // 前两个 Token 分别是 @ 和 @
+    LEX_AT_END, // 上一个 Token 是 @
 };
 
 #endif //SQL_LEX_STATES_H

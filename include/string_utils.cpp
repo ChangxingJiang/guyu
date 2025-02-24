@@ -1,6 +1,5 @@
 #include "string_utils.h"
 
-
 /**
 * 根据首字节，判断字符的长度
  *
@@ -25,4 +24,10 @@ uint8_t get_utf8_char_length(const uchar byte) {
 bool is_part_of_multi_byte_char(const uchar byte) {
     // Check if it's not a start of a new character
     return (byte & 0xC0) == 0x80;
+}
+
+void to_lowercase(std::string &str) {
+    for (char &c: str) {
+        c = static_cast<char>(std::tolower(c)); // 转换为小写
+    }
 }

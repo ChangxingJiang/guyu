@@ -147,8 +147,8 @@ static std::string find_mark(Lex_input_stream *input, const uchar mark) {
         } else {
             const uint8_t char_length = get_utf8_char_length(ch);
             result.append(input->get_ptr(), char_length);
-            std::cout << "char_length=" << int(char_length) << ", char_value=" << std::string(
-                input->get_ptr(), char_length) << std::endl;
+            // std::cout << "char_length=" << int(char_length) << ", char_value=" << std::string(
+            // input->get_ptr(), char_length) << std::endl;
             input->yy_skip(char_length);
         }
         ch = input->yy_peek();
@@ -187,15 +187,17 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
     uchar ch = '\0';
     std::string ident_or_keyword{};
     while (true) {
+        std::cout << "state: " << state << ", char: " << input->yy_peek() << std::endl;
         switch (state) {
             case LEX_START:
                 while (lex_start_map[ch = input->yy_peek()] == LEX_SKIP) {
                     if (ch == '\n') input->yylineno++;
                     input->yy_skip();
                 }
+                input->start_token(); // 重置 Token 开始位置
                 ch = input->yy_get();
                 state = lex_start_map[ch];
-                std::cout << "LEX_START 变更状态: ch = " << int(ch) << ", state = " << state << std::endl;
+            // std::cout << "LEX_START 变更状态: ch = " << int(ch) << ", state = " << state << std::endl;
                 break;
 
             /* 运算符解析逻辑 */
@@ -212,6 +214,9 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
             case LEX_RBRACE: // "}"
                 yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
                 return ch;
+            case LEX_QUES: // "?" TODO 待增加预编译模式的检查
+                yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
+                return PARAM_MARKER;
             case LEX_SUB: // "-"
                 if (input->yy_peek() == '-') {
                     input->yy_skip(); // TODO 考虑是否需要检查 -- 之后的空格
@@ -426,10 +431,10 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     if (ch == '\n') input->yylineno++;
                 }
 
-                std::cout << "[LEX_IDENT - 1] ch = " << int(ch)
-                        << ", input->yy_peek(1) = " << int(input->yy_peek(1))
-                        << ", lex_ident_map[input->yy_peek(1)] = " << bool(lex_ident_map[input->yy_peek(1)]) <<
-                        std::endl;
+            // std::cout << "[LEX_IDENT - 1] ch = " << int(ch)
+            // << ", input->yy_peek(1) = " << int(input->yy_peek(1))
+            // << ", lex_ident_map[input->yy_peek(1)] = " << bool(lex_ident_map[input->yy_peek(1)]) <<
+            // std::endl;
 
                 if (ch == '.' && lex_ident_map[input->yy_peek(1)]) {
                     // 判断下一个字符是否为 . 且之后也是标识符 TODO 这里需要考虑如何优化
@@ -437,6 +442,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     return IDENT; // TODO 需考虑是否包含多字节字符的问题
                 }
 
+                to_lowercase(ident_or_keyword);
                 if (lex_keyword_map.count(ident_or_keyword) > 0) {
                     // 判断当前语法元素是否为关键字
                     return lex_keyword_map.at(ident_or_keyword);
@@ -485,6 +491,55 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 input->start_token(); // TODO 考虑是否需要区分 start_token 和 reset_token
                 break;
 
+            /* 特殊符号 */
+            case LEX_AT:
+                yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
+                if (input->yy_peek() == '@') {
+                    input->next_state = LEX_AT_AT;
+                } else if (input->yy_peek() != '\'' || input->yy_peek() != '"' || input->yy_peek() != '`') {
+                    input->next_state = LEX_AT_END;
+                }
+                return '@';
+            case LEX_AT_AT:
+                ch = input->yy_get(); // @
+                yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
+                if (input->yy_peek() != '`') {
+                    input->next_state = LEX_AT_AT_END;
+                }
+                return '@';
+            case LEX_AT_AT_END:
+                ch = input->yy_peek();
+                while (lex_ident_map[ch]) {
+                    ch = input->yy_get();
+                }
+
+                if (ch == '.') input->next_state = LEX_IDENT_SEP_START;
+
+                yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length()));
+                to_lowercase(ident_or_keyword);
+                if (lex_keyword_map.count(ident_or_keyword) > 0) {
+                    // 判断当前语法元素是否为关键字
+                    return lex_keyword_map.at(ident_or_keyword);
+                }
+                return IDENT;
+
+            case LEX_AT_END:
+                ch = input->yy_peek();
+                while (std::isalnum(ch) || ch == '_' || ch == '$' || ch == '.') {
+                    ch = input->yy_get();
+                }
+                yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length()));
+                return LEX_HOSTNAME;
+
+            case LEX_STRING_OR_DELIMITER:
+                state = LEX_STRING; // TODO 待增加作为反引号的模式
+                break;
+
+            case LEX_DELIMITER:
+                yylval->init_lex_str(find_mark(input, static_cast<char>(ch)));
+                input->yy_skip(); // `
+                return IDENT_QUOTED;
+
             default:
                 return SYSTEM_END_OF_INPUT;
         }
@@ -495,7 +550,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     auto thd = new THD();
-    input->init("-- 1234 \na.b", 3);
+    input->init("SELECT abc FROM", 30);
     auto res1 = new Parser_yystype();;
     int res2 = yylex(res1, input, thd);
     std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
