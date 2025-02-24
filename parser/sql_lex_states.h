@@ -32,6 +32,11 @@ enum lex_states {
     LEX_AMP, // &
     LEX_BAR, // |
     LEX_COLON, // :
+    LEX_LPAREN, // (
+    LEX_RPAREN, // )
+    LEX_COMMA, // ,
+    LEX_LBRACE, // {
+    LEX_RBRACE, // }
 
     // 十六进制字面值
     LEX_IDENT_OR_HEX, // [xX] (标识符 or 十六进制字面值)

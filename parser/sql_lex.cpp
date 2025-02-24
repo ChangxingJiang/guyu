@@ -205,11 +205,16 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
             case LEX_PERCENT: // "%"
             case LEX_EQ: // "="
             case LEX_STAR: // "*"
+            case LEX_LPAREN: // "("
+            case LEX_RPAREN: // ")"
+            case LEX_COMMA: // ","
+            case LEX_LBRACE: // "{"
+            case LEX_RBRACE: // "}"
                 yylval->init_lex_str(std::string(1, static_cast<char>(ch)));
                 return ch;
             case LEX_SUB: // "-"
                 if (input->yy_peek() == '-') {
-                    input->yy_skip();
+                    input->yy_skip(); // TODO 考虑是否需要检查 -- 之后的空格
                     state = LEX_COMMENT;
                     break;
                 }
@@ -423,7 +428,8 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 
                 std::cout << "[LEX_IDENT - 1] ch = " << int(ch)
                         << ", input->yy_peek(1) = " << int(input->yy_peek(1))
-                        << ", lex_ident_map[input->yy_peek(1)] = " << bool(lex_ident_map[input->yy_peek(1)]) << std::endl;
+                        << ", lex_ident_map[input->yy_peek(1)] = " << bool(lex_ident_map[input->yy_peek(1)]) <<
+                        std::endl;
 
                 if (ch == '.' && lex_ident_map[input->yy_peek(1)]) {
                     // 判断下一个字符是否为 . 且之后也是标识符 TODO 这里需要考虑如何优化
@@ -451,7 +457,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
             case LEX_IDENT_START:
                 skip_ident(input, lex_ident_map); // 不断匹配数字、字母和多字节字符直至遇到其他字符
 
-                // std::cout << "构造时的状态: yy_length = " << input->yy_length() << std::endl;
+            // std::cout << "构造时的状态: yy_length = " << input->yy_length() << std::endl;
 
                 yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length() + 1));
 
@@ -468,6 +474,17 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 
                 return IDENT;
 
+            /* 单行注释 */
+            case LEX_COMMENT:
+                ch = input->yy_get();
+                while (ch != '\n' && ch != '\0') {
+                    ch = input->yy_get();
+                }
+                if (ch == '\n') input->yylineno++;
+                state = LEX_START; // 继续尝试匹配字符
+                input->start_token(); // TODO 考虑是否需要区分 start_token 和 reset_token
+                break;
+
             default:
                 return SYSTEM_END_OF_INPUT;
         }
@@ -478,7 +495,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     auto thd = new THD();
-    input->init("a.b", 3);
+    input->init("-- 1234 \na.b", 3);
     auto res1 = new Parser_yystype();;
     int res2 = yylex(res1, input, thd);
     std::cout << "return = " << res2 << ", token = " << res1->lexer.lex_str << std::endl;
