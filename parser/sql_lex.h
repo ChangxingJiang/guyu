@@ -5,6 +5,8 @@
 #ifndef SQL_LEX_H
 #define SQL_LEX_H
 
+#include <objects/thd_class.h>
+
 #include "lex_yystype.h"
 #include "sql_lex_states.h"
 #include "include/int_types.h"
@@ -107,5 +109,7 @@ private:
     /* 指向输入流中当前 token 结束位置的指针 */
     char *m_tok_end = nullptr;
 };
+
+int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd);
 
 #endif //SQL_LEX_H

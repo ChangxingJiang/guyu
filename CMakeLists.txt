@@ -11,7 +11,13 @@ include_directories(googletest/include googletest)
 #include_directories(${PROJECT_SOURCE_DIR}/lib/googlemock/include ${PROJECT_SOURCE_DIR}/lib/googlemock)
 
 add_executable(test
-        test/main.cpp)
+        test/main.cpp
+        parser/sql_lex.cpp
+        parser/sql_yacc.tab.h
+        parser/lex_start_map.cpp
+        include/string_utils.cpp
+        lexical/lex_keyword_map.cpp
+)
 target_link_libraries(test gtest gtest_main)
 
 include_directories(
@@ -19,9 +25,11 @@ include_directories(
 )
 
 add_executable(guyu
+        parser/main.cpp
         parser/sql_lex.cpp
         parser/sql_yacc.tab.h
         parser/lex_start_map.cpp
         include/string_utils.cpp
-        lexical/lex_keyword_map.cpp)
+        lexical/lex_keyword_map.cpp
+)
 target_link_libraries(guyu gtest gtest_main)
