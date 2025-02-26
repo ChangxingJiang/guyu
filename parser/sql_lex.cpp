@@ -15,12 +15,12 @@
 
 char *yytext;
 
-bool Lex_input_stream::init(char *buffer, int length) {
+bool Lex_input_stream::init(const char *buffer, int length) {
     reset(buffer, length);
     return true;
 }
 
-void Lex_input_stream::reset(char *buffer, int length) {
+void Lex_input_stream::reset(const char *buffer, int length) {
     yylineno = 1;
     yylval = nullptr;
     m_buf = buffer;
@@ -193,8 +193,9 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 while (lex_start_map[ch = input->yy_peek()] == LEX_SKIP) {
                     if (ch == '\n') input->yylineno++;
                     input->yy_skip();
+                    std::cout << "跳过: ch = " << int(input->yy_peek()) << std::endl;
                 }
-                input->start_token(); // 重置 Token 开始位置
+                input->start_token(); // 重置 Token 开始位置，将当前指针指向的位置作为 Token 的起始位置
                 ch = input->yy_get();
                 state = lex_start_map[ch];
             // std::cout << "LEX_START 变更状态: ch = " << int(ch) << ", state = " << state << std::endl;
@@ -425,10 +426,9 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 ident_or_keyword = std::string(input->get_tok_start(), input->yy_length() + 1); // 获取当前标识符 or 关键字
                 yylval->init_lex_str(ident_or_keyword);
 
-                ch = input->yy_peek();
-                while (lex_start_map[ch] == LEX_SKIP) {
-                    ch = input->yy_get(); // 跳过后续空格
+                while (lex_start_map[ch = input->yy_peek()] == LEX_SKIP) {
                     if (ch == '\n') input->yylineno++;
+                    input->yy_skip(); // 跳过后续空格
                 }
 
             // std::cout << "[LEX_IDENT - 1] ch = " << int(ch)
@@ -545,5 +545,3 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
         }
     }
 }
-
-

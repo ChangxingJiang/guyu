@@ -29,10 +29,10 @@ public:
     lex_states next_state;
 
     /** 初始化输入流 */
-    bool init(char *buff, int length);
+    bool init(const char *buff, int length);
 
     /** 重置输入流 */
-    void reset(char *buffer, int length);
+    void reset(const char *buffer, int length);
 
     /** 开始一个新的 token */
     void start_token() {
@@ -101,13 +101,13 @@ private:
     int m_buf_length = 0;
 
     /* 指向输入流中的当前位置的指针 */
-    char *m_ptr = nullptr;
+    const char *m_ptr = nullptr;
 
     /* 指向输入流中当前 token 开始位置的指针 */
-    char *m_tok_start = nullptr;
+    const char *m_tok_start = nullptr;
 
     /* 指向输入流中当前 token 结束位置的指针 */
-    char *m_tok_end = nullptr;
+    const char *m_tok_end = nullptr;
 };
 
 int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd);
