@@ -334,7 +334,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     while (std::isxdigit(ch)) {
                         ch = input->yy_get();
                     }
-                    if (!lex_ident_map[ch]) {
+                    if (!lex_ident_map[ch] && input->yy_length() > 2) {
                         yylval->init_lex_str(std::string(input->get_tok_start() + 2, input->yy_length() - 2));
                         return LITERAL_HEX_NUM;
                     }
@@ -348,7 +348,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     while (ch == '0' || ch == '1') {
                         ch = input->yy_get();
                     }
-                    if (!lex_ident_map[ch]) {
+                    if (!lex_ident_map[ch] && input->yy_length() > 2) {
                         yylval->init_lex_str(std::string(input->get_tok_start() + 2, input->yy_length() - 2));
                         return LITERAL_BIN_NUM;
                     }
@@ -387,6 +387,10 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     state = LEX_NUMBER_E;
                     break;
                 }
+                if (lex_ident_map[ch]) {
+                    state = LEX_IDENT;
+                    break;
+                }
                 yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length()));
                 return LITERAL_DECIMAL_NUM;
             case LEX_NUMBER_E:
@@ -395,6 +399,10 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 if (!std::isdigit(ch)) return SYSTEM_ABORT;
                 while (std::isdigit(ch)) {
                     ch = input->yy_get();
+                }
+                if (lex_ident_map[ch]) {
+                    state = LEX_IDENT;
+                    break;
                 }
                 yylval->init_lex_str(std::string(input->get_tok_start(), input->yy_length()));
                 return LITERAL_FLOAT_NUM;
