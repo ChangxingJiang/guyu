@@ -187,13 +187,13 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
     uchar ch = '\0';
     std::string ident_or_keyword{};
     while (true) {
-        std::cout << "state: " << state << ", char: " << input->yy_peek() << std::endl;
+        // std::cout << "state: " << state << ", char: " << input->yy_peek() << std::endl;
         switch (state) {
             case LEX_START:
                 while (lex_start_map[ch = input->yy_peek()] == LEX_SKIP) {
                     if (ch == '\n') input->yylineno++;
                     input->yy_skip();
-                    std::cout << "跳过: ch = " << int(input->yy_peek()) << std::endl;
+                    // std::cout << "跳过: ch = " << int(input->yy_peek()) << std::endl;
                 }
                 input->start_token(); // 重置 Token 开始位置，将当前指针指向的位置作为 Token 的起始位置
                 ch = input->yy_get();

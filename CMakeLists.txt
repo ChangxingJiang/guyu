@@ -12,6 +12,8 @@ include_directories(googletest/include googletest)
 
 add_executable(test
         test/main.cpp
+        test/lexical_one_token.cpp
+        test/lexical_base.cpp
         parser/sql_lex.cpp
         parser/sql_yacc.tab.h
         parser/lex_start_map.cpp
