@@ -271,6 +271,7 @@ std::array<uint8_t, 256> init_lex_ident_map(const std::array<lex_states, 256> &l
                                             lex_start_map[i] == LEX_IDENT_OR_BIN ||
                                             lex_start_map[i] == LEX_IDENT_OR_HEX ||
                                             lex_start_map[i] == LEX_IDENT_OR_NCHAR ||
+                                            lex_start_map[i] == LEX_ZERO ||
                                             lex_start_map[i] == LEX_NUMBER);
         // std::cout << "[lex_ident_map] i = " << i << ", ident_map[i] = " << int(ident_map[i]) << std::endl;
     }
