@@ -228,42 +228,42 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     input->yy_skip();
                     if (input->yy_peek() == '>') {
                         input->yy_skip();
-                        return OPERATOR_JSON_UNQUOTED_SEPARATOR; // "->>"
+                        return OPERATOR_SUB_GT_GT; // "->>"
                     }
-                    return OPERATOR_JSON_SEPARATOR; // "->"
+                    return OPERATOR_SUB_GT; // "->"
                 }
                 return ch;
             case LEX_LT: // "<"
                 if (input->yy_peek() == '>') {
                     input->yy_skip();
-                    return OPERATOR_NE; // "<>"
+                    return OPERATOR_BANG_EQ; // "<>"
                 }
                 if (input->yy_peek() == '<') {
                     input->yy_skip();
-                    return OPERATOR_SHIFT_LEFT; // "<<"
+                    return OPERATOR_LT_LT; // "<<"
                 }
                 if (input->yy_peek() == '=') {
                     input->yy_skip();
                     if (input->yy_peek() == '>') {
-                        return OPERATOR_EQUAL; // "<=>"
+                        return OPERATOR_LT_EQ_GT; // "<=>"
                     }
-                    return OPERATOR_LE; // "<="
+                    return OPERATOR_LT_EQ; // "<="
                 }
-                return OPERATOR_LT; // "<"
+                return '<'; // "<"
             case LEX_GT: // ">"
                 if (input->yy_peek() == '>') {
                     input->yy_skip();
-                    return OPERATOR_SHIFT_RIGHT; // ">>"
+                    return OPERATOR_GT_GT; // ">>"
                 }
                 if (input->yy_peek() == '=') {
                     input->yy_skip();
-                    return OPERATOR_GE; // ">="
+                    return OPERATOR_GT_EQ; // ">="
                 }
-                return OPERATOR_GT; // ">"
+                return '>'; // ">"
             case LEX_BANG: // "!"
                 if (input->yy_peek() == '=') {
                     input->yy_skip();
-                    return OPERATOR_NE; // "!="
+                    return OPERATOR_BANG_EQ; // "!="
                 }
                 return ch;
             case LEX_SLASH: // "/"
@@ -276,19 +276,19 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
             case LEX_AMP: // "&"
                 if (input->yy_peek() == '&') {
                     input->yy_skip();
-                    return OPERATOR_AND_AND; // "&&"
+                    return OPERATOR_AMP_AMP; // "&&"
                 }
                 return ch;
             case LEX_BAR: // "|"
                 if (input->yy_peek() == '|') {
                     input->yy_skip();
-                    return OPERATOR_OR_OR;
+                    return OPERATOR_BAR_BAR;
                 }
                 return ch;
             case LEX_COLON: // ":"
                 if (input->yy_peek() == '=') {
                     input->yy_skip();
-                    return OPERATOR_SET_VAR;
+                    return OPERATOR_COLON_EQ;
                 }
                 return SYSTEM_ABORT;
 

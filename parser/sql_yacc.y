@@ -9,27 +9,23 @@
 /**
 解析器系统符号
 */
-%token  SYSTEM_ABORT                           /* INTERNAL : 词法解析器解析异常 */
-%token  SYSTEM_END_OF_INPUT                    /* INTERNAL : 词法解析器解析结束 */
+%token  SYSTEM_ABORT                              /* INTERNAL : 词法解析器解析异常 */
+%token  SYSTEM_END_OF_INPUT                       /* INTERNAL : 词法解析器解析结束 */
 
 /**
 运算符
 */
-%token  OPERATOR_AND_AND                          /* OPERATOR : && */
-%token  OPERATOR_EQ                               /* OPERATOR : = */
-%token  OPERATOR_EQUAL                            /* OPERATOR : <=> */
-%token  OPERATOR_GE                               /* OPERATOR : >= */
-%token  OPERATOR_GT                               /* OPERATOR : > */
-%token  OPERATOR_LE                               /* OPERATOR : <= */
-%token  OPERATOR_LT                               /* OPERATOR : < */
-%token  OPERATOR_NE                               /* OPERATOR : <> 或 != */
-%token  OPERATOR_NEG                              /* OPERATOR : - (一元表达式) */
-%token  OPERATOR_OR_OR                            /* OPERATOR : || */
-%token  OPERATOR_SHIFT_LEFT                       /* OPERATOR : << */
-%token  OPERATOR_SHIFT_RIGHT                      /* OPERATOR : >> */
-%token  OPERATOR_JSON_SEPARATOR                   /* OPERATOR: -> */
-%token  OPERATOR_JSON_UNQUOTED_SEPARATOR          /* OPERATOR: ->> */
-%token  OPERATOR_SET_VAR                          /* OPERATOR: := */
+%token  OPERATOR_AMP_AMP                          /* OPERATOR : && */
+%token  OPERATOR_LT_EQ_GT                         /* OPERATOR : <=> */
+%token  OPERATOR_GT_EQ                            /* OPERATOR : >= */
+%token  OPERATOR_LT_EQ                            /* OPERATOR : <= */
+%token  OPERATOR_BANG_EQ                          /* OPERATOR : <> 或 != */
+%token  OPERATOR_BAR_BAR                          /* OPERATOR : || */
+%token  OPERATOR_LT_LT                            /* OPERATOR : << */
+%token  OPERATOR_GT_GT                            /* OPERATOR : >> */
+%token  OPERATOR_SUB_GT                           /* OPERATOR: -> */
+%token  OPERATOR_SUB_GT_GT                        /* OPERATOR: ->> */
+%token  OPERATOR_COLON_EQ                         /* OPERATOR: := */
 
 /**
 字面值
