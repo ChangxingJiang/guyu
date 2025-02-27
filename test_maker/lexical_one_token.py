@@ -29,7 +29,7 @@ def main():
             continue
         keyword = token_name[8:]
 
-        print(f"TEST(lexical_one_token, keyword_{keyword.lower()}) {{")
+        print(f"TEST(lexical_one_token_keyword, keyword_{keyword.lower()}) {{")
         print(f"    EXPECT_EQ({token_name}, parse_one_token(std::string(\"{keyword.upper()}\")));")
         print(f"    EXPECT_EQ({token_name}, parse_one_token(std::string(\"{keyword.lower()}\")));")
         print("}")
