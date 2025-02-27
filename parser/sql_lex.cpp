@@ -328,7 +328,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                 yylval->init_lex_str(std::string(input->get_tok_start() + 2, input->yy_length() - 3));
                 return LITERAL_HEX_NUM;
             case LEX_ZERO: // "0"
-                if (input->yy_peek() == 'x') {
+                if (input->yy_peek() == 'x' || input->yy_peek() == 'X') {
                     input->yy_skip();
                     ch = input->yy_get();
                     while (std::isxdigit(ch)) {
@@ -342,7 +342,7 @@ int yylex(Parser_yystype *yacc_yylval, Lex_input_stream *input, THD *thd) {
                     state = LEX_IDENT;
                     break;
                 }
-                if (input->yy_peek() == 'b') {
+                if (input->yy_peek() == 'b' || input->yy_peek() == 'B') {
                     input->yy_skip();
                     ch = input->yy_get();
                     while (ch == '0' || ch == '1') {

@@ -1,5 +1,5 @@
 /**
-* 单个运算符 Token 解析的单元测试用例
+ * 单个运算符 Token 解析的单元测试用例
  */
 
 #include <iostream>

@@ -4,7 +4,10 @@
 int main(int argc, char *argv[]) {
     auto *input = new Lex_input_stream();
     auto thd = new THD();
-    auto sql = std::string("X509");
+    auto sql = std::string("0b01");
+    // auto sql = std::string("0xc1");
+    // auto sql = std::string("-589");
+    // auto sql = std::string("-123456789123456789");
     input->init(sql.c_str(), static_cast<int>(sql.length()));
     auto res1 = new Parser_yystype();;
     int res2 = yylex(res1, input, thd);
