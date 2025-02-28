@@ -16,6 +16,7 @@ add_executable(test
         test/lexical_one_token_operator.cpp
         test/lexical_one_token_literal.cpp
         test/lexical_one_token_other.cpp
+        test/lexical_multi_token.cpp
         test/lexical_base.cpp
         parser/sql_lex.cpp
         parser/sql_yacc.tab.h

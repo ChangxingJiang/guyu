@@ -36,3 +36,9 @@ TEST(lexical_one_token_other, special_ident) {
     EXPECT_EQ(SYSTEM_ABORT, parse_one_token(std::string("3EFG")));
     EXPECT_EQ(SYSTEM_ABORT, parse_one_token(std::string("0.3EFG")));
 }
+
+TEST(lexical_one_token_other, ident_quoted) {
+    EXPECT_EQ(IDENT_QUOTED, parse_one_token(std::string("`abc`")));
+    EXPECT_EQ(IDENT_QUOTED, parse_one_token(std::string("`hello`")));
+    EXPECT_EQ(IDENT_QUOTED, parse_one_token(std::string("`谷雨`")));
+}
